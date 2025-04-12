@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+.section-wrapper {
+	@apply rounded-xl bg-white p-[2%];
+}
+.section-title__wrapper {
+	@apply flex gap-2 items-center;
+}
+.section-title {
+	@apply font-medium text-[1rem];
+}
