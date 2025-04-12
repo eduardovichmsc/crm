@@ -1,8 +1,8 @@
+"use client";
 import Link from "next/link";
 import { Plus, Search } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -13,66 +13,17 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MentorPreview } from "@/types/Mentor";
+import { mentorsArray } from "@/store/placeholder";
+import { getAvailabilityBadge } from "@/utils/format";
+import { useSearch } from "@/hooks/useSearch";
 
 export default function MentorsPage() {
-	// Sample mentors data
-	const mentors: MentorPreview[] = [
-		{
-			id: 1,
-			name: "Alex Johnson",
-			role: "Senior Developer",
-			company: "TechCorp Inc.",
-			avatar: "/placeholder.svg?height=80&width=80",
-			skills: [
-				{ name: "React", level: 50 },
-				{ name: "Node.js", level: 70 },
-				{ name: "TypeScript", level: 60 },
-				{ name: "Cloud Architecture", level: 0 },
-				{ name: "DevOps", level: 75 },
-			],
-			availability: {
-				status: "Available",
-			},
-			mentorshipStats: {
-				activeMentees: 3,
-				totalMentees: 10,
-			},
-		},
-		{
-			id: 2,
-			name: "Maria Garcia",
-			role: "UX Designer",
-			company: "DesignHub",
-			avatar: "/placeholder.svg?height=80&width=80",
-			skills: [
-				{ name: "UI/UX", level: 60 },
-				{ name: "Figma", level: 50 },
-			],
-			availability: { status: "Unavailable" },
-			mentorshipStats: {
-				activeMentees: 7,
-				totalMentees: 10,
-				averageRating: 4.2,
-			},
-		},
-	];
-
-	// Get availability badge color
-	const getAvailabilityBadge = (availability: string) => {
-		switch (availability) {
-			case "Available":
-				return <Badge className="bg-green-500">Available</Badge>;
-			case "Limited":
-				return <Badge className="bg-amber-500">Limited</Badge>;
-			case "Unavailable":
-				return <Badge className="bg-slate-500">Unavailable</Badge>;
-			default:
-				return <Badge>Unknown</Badge>;
-		}
-	};
+	const { searchValue, filteredData, handleValueChange, handleSubmit } =
+		useSearch(mentorsArray);
 
 	return (
 		<div className="container py-6">
+			{/* Page Overview */}
 			<div className="mb-8 flex items-center justify-between">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Mentors</h1>
@@ -86,19 +37,22 @@ export default function MentorsPage() {
 				</Button>
 			</div>
 
+			{/* Search */}
 			<div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-				<div className="relative w-full max-w-sm">
+				<form onSubmit={handleSubmit} className="relative w-full max-w-sm">
 					<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 					<Input
 						type="search"
 						placeholder="Search mentors..."
 						className="pl-8"
+						value={searchValue}
+						onChange={handleValueChange}
 					/>
-				</div>
+				</form>
 			</div>
 
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-				{mentors.map((mentor: MentorPreview) => (
+				{filteredData.map((mentor: MentorPreview) => (
 					<Card key={mentor.id} className="overflow-hidden">
 						<CardHeader className="pb-2">
 							<div className="flex items-start justify-between">

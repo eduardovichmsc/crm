@@ -1,9 +1,7 @@
-"use client";
-
-import { ContactIcon, FileStackIcon, GripIcon } from "lucide-react";
+import { ContactIcon, FileStackIcon, GripIcon, VideoIcon } from "lucide-react";
 import { SidebarList } from "@/components/Sidebar/List";
-import { ROUTES } from "@/routes/routes";
 import { JSX } from "react";
+import { PRIVATEROUTES, ROUTES } from "@/routes/routes";
 
 const SidebarItems: {
 	[section: string]: {
@@ -30,6 +28,14 @@ const SidebarItems: {
 			icon: <FileStackIcon />,
 			title: "Students",
 			href: ROUTES.STUDENTS,
+		},
+	],
+	Mentor: [
+		{
+			icon: <VideoIcon />,
+			title: "Meetings",
+			active: true,
+			href: PRIVATEROUTES.MEETINGS,
 		},
 	],
 };

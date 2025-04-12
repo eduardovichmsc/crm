@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { Plus, Search } from "lucide-react";
 
@@ -6,99 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { StudentPreview } from "@/types/Student";
+import { useSearch } from "@/hooks/useSearch";
+import { studentsArray } from "@/store/placeholder";
 
 export default function StudentsPage() {
-	// Student Data
-	const students: StudentPreview[] = [
-		{
-			id: 1,
-			name: "Jamie Smith",
-			role: "Junior Developer",
-			company: "StartupX",
-			avatar: "/placeholder.svg?height=80&width=80",
-			skills: [
-				{ name: "React", level: 50 },
-				{ name: "Node.js", level: 70 },
-				{ name: "TypeScript", level: 60 },
-				{ name: "Cloud Architecture", level: 0 },
-				{ name: "DevOps", level: 75 },
-			],
-			progress: {
-				overallCompletion: 65,
-				skillsProgress: [],
-			},
-			currentMentors: [
-				{
-					id: 1,
-					name: "Alex Johnson",
-					role: "Senior Developer",
-					avatar: "/placeholder.svg?height=40&width=40",
-					startDate: "2023-09-15",
-					progress: 65,
-					focus: "React Development",
-				},
-			],
-		},
-
-		{
-			id: 2,
-			name: "Lena Carter",
-			role: "Frontend Intern",
-			company: "PixelPerfect",
-			avatar: "/placeholder.svg?height=80&width=80",
-			skills: [
-				{ name: "HTML/CSS", level: 90 },
-				{ name: "JavaScript", level: 70 },
-				{ name: "Figma", level: 60 },
-				{ name: "Accessibility", level: 55 },
-			],
-			progress: {
-				overallCompletion: 50,
-				skillsProgress: [],
-			},
-			currentMentors: [
-				{
-					id: 2,
-					name: "Maria Garcia",
-					role: "UX Designer",
-					avatar: "/placeholder.svg?height=40&width=40",
-					startDate: "2024-01-10",
-					progress: 50,
-					focus: "UI/UX Fundamentals",
-				},
-			],
-		},
-
-		{
-			id: 3,
-			name: "Omar Malik",
-			role: "Data Science Trainee",
-			company: "DataMinds",
-			avatar: "/placeholder.svg?height=80&width=80",
-			skills: [
-				{ name: "Python", level: 80 },
-				{ name: "Machine Learning", level: 60 },
-				{ name: "SQL", level: 70 },
-				{ name: "Data Visualization", level: 65 },
-			],
-			progress: {
-				overallCompletion: 72,
-				skillsProgress: [],
-			},
-			currentMentors: [
-				{
-					id: 5,
-					name: "Sophia Kim",
-					role: "Data Scientist",
-					avatar: "/placeholder.svg?height=40&width=40",
-					startDate: "2024-02-20",
-					progress: 72,
-					focus: "ML Fundamentals",
-				},
-			],
-		},
-	];
+	const { searchValue, handleValueChange, handleSubmit, filteredData } =
+		useSearch(studentsArray);
 
 	return (
 		<div className="container py-6">
@@ -116,18 +30,20 @@ export default function StudentsPage() {
 			</div>
 
 			<div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-				<div className="relative w-full max-w-sm">
+				<form onSubmit={handleSubmit} className="relative w-full max-w-sm">
 					<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 					<Input
 						type="search"
-						placeholder="Search students..."
+						placeholder="Search mentors..."
 						className="pl-8"
+						value={searchValue}
+						onChange={handleValueChange}
 					/>
-				</div>
+				</form>
 			</div>
 
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-				{students.map((student) => (
+				{filteredData.map((student) => (
 					<Card key={student.id} className="overflow-hidden p-0 pt-3">
 						<CardContent className="p-0">
 							<div className="px-4">

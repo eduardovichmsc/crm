@@ -47,3 +47,17 @@ export const getProjectBadge = (status: string) => {
 			return <Badge>Unknown</Badge>;
 	}
 };
+
+// Get availability badge color
+export const getAvailabilityBadge = (availability: string) => {
+	switch (availability) {
+		case "Available":
+			return <Badge className="bg-green-500">Available</Badge>;
+		case "Limited":
+			return <Badge className="bg-amber-500">Limited</Badge>;
+		case "Unavailable":
+			return <Badge className="bg-slate-500">Unavailable</Badge>;
+		default:
+			return <Badge>Unknown</Badge>;
+	}
+};

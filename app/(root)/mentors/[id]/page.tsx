@@ -1,29 +1,23 @@
 import {
 	ArrowLeft,
-	Calendar,
-	Clock,
 	ExternalLink,
 	Mail,
 	MessageSquare,
 	Phone,
-	Users,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mentor } from "@/types/Mentor";
-import { formatDate, formatTime, renderStars } from "@/utils/format";
 import Link from "next/link";
+import { MenteesTab } from "@/components/Tabs/Mentor/Mentees";
+import { MeetingsTab } from "@/components/Tabs/Meetings";
+import { OverviewTab } from "@/components/Tabs/Overview";
+import { ReviewsTab } from "@/components/Tabs/Mentor/Reviews";
 
 export default function MentorProfile() {
 	// Mentor Data
@@ -156,7 +150,7 @@ export default function MentorProfile() {
 	};
 
 	return (
-		<div className="w-full">
+		<>
 			{/* Breadcrumb */}
 			<div className="mb-6">
 				<Link
@@ -318,292 +312,26 @@ export default function MentorProfile() {
 				<div className="lg:col-span-2 w-full">
 					<Tabs defaultValue="about" className="">
 						<TabsList className="grid w-full grid-cols-4">
-							<TabsTrigger value="about">About</TabsTrigger>
+							<TabsTrigger value="about">Overview</TabsTrigger>
 							<TabsTrigger value="mentees">Mentees</TabsTrigger>
 							<TabsTrigger value="reviews">Reviews</TabsTrigger>
 							<TabsTrigger value="meetings">Meetings</TabsTrigger>
 						</TabsList>
 
-						{/* About Tab */}
-						<TabsContent value="about" className="mt-6">
-							<Card>
-								<CardHeader>
-									<CardTitle>About {mentor.name}</CardTitle>
-									<CardDescription>
-										Professional background and mentorship approach
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-6">
-										<div>
-											<h3 className="mb-2 text-lg font-medium">Bio</h3>
-											<p>{mentor.bio}</p>
-										</div>
-
-										<div>
-											<h3 className="mb-3 text-lg font-medium">
-												Mentorship Statistics
-											</h3>
-											<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-												<div className="rounded-lg border p-3 text-center">
-													<div className="text-2xl font-bold text-blue-600">
-														{mentor.mentorshipStats.totalMentees}
-													</div>
-													<div className="text-xs text-muted-foreground">
-														Total Mentees
-													</div>
-												</div>
-												<div className="rounded-lg border p-3 text-center">
-													<div className="text-2xl font-bold text-green-600">
-														{mentor.mentorshipStats.activeMentees}
-													</div>
-													<div className="text-xs text-muted-foreground">
-														Active
-													</div>
-												</div>
-												<div className="rounded-lg border p-3 text-center">
-													<div className="text-2xl font-bold text-purple-600">
-														{mentor.mentorshipStats.completedMentorships}
-													</div>
-													<div className="text-xs text-muted-foreground">
-														Completed
-													</div>
-												</div>
-												<div className="rounded-lg border p-3 text-center">
-													<div className="text-2xl font-bold text-amber-600">
-														{mentor.mentorshipStats.averageRating}
-													</div>
-													<div className="text-xs text-muted-foreground">
-														Avg. Rating
-													</div>
-												</div>
-												<div className="rounded-lg border p-3 text-center">
-													<div className="text-2xl font-bold text-cyan-600">
-														{mentor.mentorshipStats.totalHours}
-													</div>
-													<div className="text-xs text-muted-foreground">
-														Total Hours
-													</div>
-												</div>
-											</div>
-										</div>
-
-										<div>
-											<h3 className="mb-2 text-lg font-medium">Availability</h3>
-											<div className="rounded-lg border p-4">
-												<div className="mb-3 flex items-center">
-													<Badge className="bg-green-500 mr-2">
-														{mentor.availability.status}
-													</Badge>
-													<span className="text-sm">
-														{mentor.availability.hours}
-													</span>
-												</div>
-												<div>
-													<h4 className="mb-1 text-sm font-medium">
-														Preferred Meeting Times:
-													</h4>
-													<ul className="list-inside list-disc space-y-1">
-														{mentor.availability.preferredTimes?.map((time) => (
-															<li
-																key={time}
-																className="text-sm text-muted-foreground">
-																{time}
-															</li>
-														))}
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
+						{/* Overview Tab */}
+						<OverviewTab role="mentor" data={mentor} />
 
 						{/* Mentees Tab */}
-						<TabsContent value="mentees" className="mt-6">
-							<Card>
-								<CardHeader>
-									<CardTitle>Current Mentees</CardTitle>
-									<CardDescription>
-										{mentor.currentMentees.length} active mentorship
-										{mentor.currentMentees.length !== 1 ? "s" : ""}
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-4">
-										{mentor.currentMentees.map((mentee) => (
-											<div
-												key={mentee.id}
-												className="flex items-center justify-between rounded-lg border p-4">
-												<div className="flex items-center gap-3">
-													<Avatar>
-														<AvatarImage
-															src={mentee.avatar || "/placeholder.svg"}
-															alt={mentee.name}
-														/>
-														<AvatarFallback>
-															{mentee.name
-																.split(" ")
-																.map((n) => n[0])
-																.join("")}
-														</AvatarFallback>
-													</Avatar>
-													<div>
-														<h4 className="font-medium">{mentee.name}</h4>
-														<p className="text-sm text-muted-foreground">
-															{mentee.role}
-														</p>
-														<div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-															<Calendar className="h-3 w-3" />
-															<span>
-																Started {formatDate(mentee.startDate)}
-															</span>
-														</div>
-													</div>
-												</div>
-												<div className="text-right hidden">
-													<div className="mb-1 flex items-center justify-end gap-2">
-														<span className="text-sm font-medium">
-															Progress
-														</span>
-														<span className="text-sm">{mentee.progress}%</span>
-													</div>
-													<div className="h-2 w-32 overflow-hidden rounded-full bg-slate-100">
-														<div
-															className="h-full rounded-full bg-blue-600"
-															style={{ width: `${mentee.progress}%` }}></div>
-													</div>
-												</div>
-											</div>
-										))}
-									</div>
-
-									<div className="mt-6 flex justify-center">
-										<Button
-											variant="outline"
-											className="flex items-center gap-2">
-											<Users className="h-4 w-4" />
-											View Past Mentees
-										</Button>
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
+						<MenteesTab data={mentor} />
 
 						{/* Reviews Tab */}
-						<TabsContent value="reviews" className="mt-6">
-							<Card>
-								<CardHeader>
-									<div className="flex items-center justify-between">
-										<div>
-											<CardTitle>Mentee Reviews</CardTitle>
-											<CardDescription>
-												Average rating: {mentor.mentorshipStats.averageRating}/5
-												({mentor.reviews.length} reviews)
-											</CardDescription>
-										</div>
-										<div className="flex items-center">
-											{renderStars(mentor.mentorshipStats.averageRating || 0)}
-										</div>
-									</div>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-6">
-										{mentor.reviews.map((review) => (
-											<div key={review.id} className="rounded-lg border p-4">
-												<div className="mb-3 flex items-center justify-between">
-													<div className="flex items-center gap-3">
-														<Avatar>
-															<AvatarImage
-																src={review.avatar || "/placeholder.svg"}
-																alt={review.mentee}
-															/>
-															<AvatarFallback>
-																{review.mentee[0]}
-															</AvatarFallback>
-														</Avatar>
-														<div>
-															<h4 className="font-medium">{review.mentee}</h4>
-															<p className="text-xs text-muted-foreground">
-																{formatDate(review.date)}
-															</p>
-														</div>
-													</div>
-													<div className="flex">
-														{renderStars(review.rating)}
-													</div>
-												</div>
-												<p className="text-sm">{review.text}</p>
-											</div>
-										))}
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
+						<ReviewsTab data={mentor} />
 
 						{/* Meetings Tab */}
-						<TabsContent value="meetings" className="mt-6">
-							<Card>
-								<CardHeader>
-									<CardTitle>Upcoming Meetings</CardTitle>
-									<CardDescription>
-										{mentor.upcomingMeetings.length} scheduled meeting
-										{mentor.upcomingMeetings.length !== 1 ? "s" : ""}
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-4">
-										{mentor.upcomingMeetings.map((meeting) => (
-											<div key={meeting.id} className="rounded-lg border p-4">
-												<div className="mb-2 flex items-center justify-between">
-													<h4 className="font-medium">{meeting.topic}</h4>
-													<Badge variant="outline">
-														{meeting.duration} min
-													</Badge>
-												</div>
-												<div className="mb-3 flex items-center gap-4">
-													<div className="flex items-center gap-1 text-sm">
-														<Calendar className="h-4 w-4 text-muted-foreground" />
-														<span>{formatDate(meeting.date)}</span>
-													</div>
-													<div className="flex items-center gap-1 text-sm">
-														<Clock className="h-4 w-4 text-muted-foreground" />
-														<span>{formatTime(meeting.date)}</span>
-													</div>
-												</div>
-												<div className="flex items-center gap-2">
-													<span className="text-sm text-muted-foreground">
-														With:
-													</span>
-													<span className="text-sm font-medium">
-														{meeting.mentee}
-													</span>
-												</div>
-												<div className="mt-3 flex gap-2">
-													<Button
-														size="sm"
-														variant="outline"
-														className="flex-1">
-														Reschedule
-													</Button>
-													<Button size="sm" className="flex-1">
-														Join Meeting
-													</Button>
-												</div>
-											</div>
-										))}
-									</div>
-
-									<div className="mt-6">
-										<Button className="w-full">Schedule New Meeting</Button>
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
+						<MeetingsTab role="mentor" data={mentor} />
 					</Tabs>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

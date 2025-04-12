@@ -18,7 +18,7 @@ export const SidebarItem = ({
 	return (
 		<li
 			className={clsx(
-				"rounded-full flex items-center transition-colors",
+				"*:select-none rounded-full flex items-center transition-colors",
 				active
 					? "bg-zinc-800 cursor-default"
 					: "bg-transparent hover:bg-zinc-200 cursor-pointer",

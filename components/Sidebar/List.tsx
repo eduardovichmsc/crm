@@ -41,15 +41,23 @@ export const SidebarList = ({
 					"h-0 ": collapsed,
 					"space-y-2 h-full": !collapsed,
 				})}>
-				{array.map((item, index) => (
-					<SidebarItem
-						key={index}
-						icon={item.icon}
-						href={item.href}
-						title={item.title}
-						active={pathname === item.href}
-					/>
-				))}
+				{array
+					.filter((item) => !item.hide)
+					.map((item, index) => (
+						<SidebarItem
+							key={index}
+							icon={item.icon}
+							href={item.href}
+							title={item.title}
+							active={
+								item.href === "/"
+									? pathname === "/"
+									: item.href
+									? pathname.startsWith(item.href)
+									: false
+							}
+						/>
+					))}
 			</ul>
 		</div>
 	);

@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { MoonIcon } from "lucide-react";
+import Image from "next/image";
 import { ReactNode } from "react";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -11,7 +12,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 					<div className="size-12 flex justify-center items-center aspect-square bg-zinc-200 rounded-full overflow-hidden">
 						<MoonIcon className="p-1 text-black" />
 					</div>
-					<div className="size-12 flex justify-center items-center aspect-square bg-zinc-800 rounded-full overflow-hidden"></div>
+					<div className="size-12 flex justify-center items-center aspect-square bg-zinc-800 rounded-full overflow-hidden relative">
+						<Image src={"/pfp.jpg"} fill alt="pfp" />
+					</div>
 				</div>
 			</div>
 			<div className="flex h-full">

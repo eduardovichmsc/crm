@@ -79,8 +79,9 @@ export interface Mentor {
 
 export type MentorPreview = Pick<
 	Mentor,
-	"id" | "name" | "role" | "company" | "avatar" | "skills" | "mentorshipStats"
+	"id" | "name" | "role" | "company" | "avatar" | "skills"
 > & {
+	education?: Partial<Mentor["education"]>;
 	availability: Partial<Mentor["availability"]>;
 	mentorshipStats: Partial<Mentor["mentorshipStats"]>;
 };

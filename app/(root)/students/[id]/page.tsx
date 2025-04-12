@@ -1,34 +1,25 @@
 import Link from "next/link";
 import {
 	ArrowLeft,
-	Calendar,
-	Clock,
 	ExternalLink,
 	Mail,
 	MessageSquare,
 	Phone,
-	Plus,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { Student } from "@/types/Student";
-import {
-	formatDate,
-	formatTime,
-	getProjectBadge,
-	renderStars,
-} from "@/utils/format";
+import { MentorsTab } from "@/components/Tabs/Student/Mentors";
+import { ProgressTab } from "@/components/Tabs/Student/Progress";
+import { ProjectsTab } from "@/components/Tabs/Student/Projects";
+import { CustomTabsList } from "@/components/Tabs/CustomTabsList";
+import { MeetingsTab } from "@/components/Tabs/Meetings";
+import { OverviewTab } from "@/components/Tabs/Overview";
 
 export default function StudentProfile() {
 	const student: Student = {
@@ -188,7 +179,7 @@ export default function StudentProfile() {
 	};
 
 	return (
-		<div className="container py-6">
+		<>
 			{/* Breadcrumb */}
 			<div className="mb-6">
 				<Link
@@ -326,566 +317,31 @@ export default function StudentProfile() {
 				{/* Right Column - Tabs Content */}
 				<div className="lg:col-span-2">
 					<Tabs defaultValue="overview">
-						<TabsList className="grid w-full grid-cols-5">
+						<CustomTabsList className="border border-black w-full">
 							<TabsTrigger value="overview">Overview</TabsTrigger>
 							<TabsTrigger value="mentors">Mentors</TabsTrigger>
 							<TabsTrigger value="progress">Progress</TabsTrigger>
 							<TabsTrigger value="meetings">Meetings</TabsTrigger>
 							<TabsTrigger value="projects">Projects</TabsTrigger>
-						</TabsList>
+						</CustomTabsList>
 
 						{/* Overview Tab */}
-						<TabsContent value="overview" className="mt-6">
-							<Card>
-								<CardHeader>
-									<CardTitle>About {student.name}</CardTitle>
-									<CardDescription>
-										Background and mentorship journey
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-6">
-										<div>
-											<h3 className="mb-2 text-lg font-medium">Bio</h3>
-											<p>{student.bio}</p>
-										</div>
-
-										<div>
-											<h3 className="mb-3 text-lg font-medium">
-												Mentorship Progress
-											</h3>
-											<div className="mb-6 rounded-lg border p-4">
-												<div className="mb-2 flex items-center justify-between">
-													<span className="font-medium">Overall Progress</span>
-													<span>{student.progress.overallCompletion}%</span>
-												</div>
-												<Progress
-													value={student.progress.overallCompletion}
-													className="h-2.5"
-												/>
-											</div>
-
-											<div className="grid gap-4 md:grid-cols-2">
-												<div>
-													<h4 className="mb-3 text-sm font-medium">
-														Current Mentors
-													</h4>
-													{student.currentMentors.map((mentor) => (
-														<div
-															key={mentor.id}
-															className="flex items-center gap-3 rounded-lg border p-3">
-															<Avatar>
-																<AvatarImage
-																	src={mentor.avatar || "/placeholder.svg"}
-																	alt={mentor.name}
-																/>
-																<AvatarFallback>
-																	{mentor.name
-																		.split(" ")
-																		.map((n) => n[0])
-																		.join("")}
-																</AvatarFallback>
-															</Avatar>
-															<div>
-																<div className="font-medium">{mentor.name}</div>
-																<div className="text-xs text-muted-foreground">
-																	{mentor.role}
-																</div>
-																<div className="mt-1 text-xs">
-																	<span className="text-blue-600">
-																		{mentor.focus}
-																	</span>
-																</div>
-															</div>
-														</div>
-													))}
-												</div>
-
-												<div>
-													<h4 className="mb-3 text-sm font-medium">
-														Upcoming Meeting
-													</h4>
-													{student.meetings.upcoming.length > 0 ? (
-														<div className="rounded-lg border p-3">
-															<div className="font-medium">
-																{student.meetings.upcoming[0].topic}
-															</div>
-															<div className="mt-2 flex items-center gap-4">
-																<div className="flex items-center gap-1 text-sm">
-																	<Calendar className="h-4 w-4 text-muted-foreground" />
-																	<span>
-																		{formatDate(
-																			student.meetings.upcoming[0].date
-																		)}
-																	</span>
-																</div>
-																<div className="flex items-center gap-1 text-sm">
-																	<Clock className="h-4 w-4 text-muted-foreground" />
-																	<span>
-																		{formatTime(
-																			student.meetings.upcoming[0].date
-																		)}
-																	</span>
-																</div>
-															</div>
-															<div className="mt-1 text-sm text-muted-foreground">
-																With {student.meetings.upcoming[0].mentor}
-															</div>
-															<Button size="sm" className="mt-3 w-full">
-																Join Meeting
-															</Button>
-														</div>
-													) : (
-														<div className="rounded-lg border p-3 text-center text-muted-foreground">
-															No upcoming meetings scheduled
-														</div>
-													)}
-												</div>
-											</div>
-										</div>
-
-										<div>
-											<h3 className="mb-3 text-lg font-medium">
-												Recent Feedback
-											</h3>
-											{student.feedback.length > 0 ? (
-												<div className="rounded-lg border p-4">
-													<div className="mb-2 flex items-center justify-between">
-														<div className="font-medium">
-															From {student.feedback[0].mentor}
-														</div>
-														<div className="text-sm text-muted-foreground">
-															{formatDate(student.feedback[0].date)}
-														</div>
-													</div>
-													<p className="text-sm">{student.feedback[0].text}</p>
-													<div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-														<div className="rounded-md bg-slate-50 p-2 text-center">
-															<div className="text-xs text-muted-foreground">
-																Technical
-															</div>
-															<div className="flex justify-center">
-																{renderStars(
-																	student.feedback[0].areas.technical
-																)}
-															</div>
-														</div>
-														<div className="rounded-md bg-slate-50 p-2 text-center">
-															<div className="text-xs text-muted-foreground">
-																Communication
-															</div>
-															<div className="flex justify-center">
-																{renderStars(
-																	student.feedback[0].areas.communication
-																)}
-															</div>
-														</div>
-														<div className="rounded-md bg-slate-50 p-2 text-center">
-															<div className="text-xs text-muted-foreground">
-																Problem Solving
-															</div>
-															<div className="flex justify-center">
-																{renderStars(
-																	student.feedback[0].areas.problemSolving
-																)}
-															</div>
-														</div>
-														<div className="rounded-md bg-slate-50 p-2 text-center">
-															<div className="text-xs text-muted-foreground">
-																Initiative
-															</div>
-															<div className="flex justify-center">
-																{renderStars(
-																	student.feedback[0].areas.initiative
-																)}
-															</div>
-														</div>
-													</div>
-												</div>
-											) : (
-												<div className="rounded-lg border p-4 text-center text-muted-foreground">
-													No feedback available yet
-												</div>
-											)}
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
+						<OverviewTab role="student" data={student} />
 
 						{/* Mentors Tab */}
-						<TabsContent value="mentors" className="mt-6">
-							<Card>
-								<CardHeader>
-									<CardTitle>Mentorship Relationships</CardTitle>
-									<CardDescription>Current and past mentors</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-6">
-										<div>
-											<h3 className="mb-3 text-lg font-medium">
-												Current Mentors
-											</h3>
-											{student.currentMentors.map((mentor) => (
-												<div
-													key={mentor.id}
-													className="mb-4 rounded-lg border p-4">
-													<div className="flex items-start justify-between">
-														<div className="flex items-start gap-3">
-															<Avatar className="h-12 w-12">
-																<AvatarImage
-																	src={mentor.avatar || "/placeholder.svg"}
-																	alt={mentor.name}
-																/>
-																<AvatarFallback>
-																	{mentor.name
-																		.split(" ")
-																		.map((n) => n[0])
-																		.join("")}
-																</AvatarFallback>
-															</Avatar>
-															<div>
-																<h4 className="font-medium">{mentor.name}</h4>
-																<p className="text-sm text-muted-foreground">
-																	{mentor.role}
-																</p>
-																<div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-																	<Calendar className="h-3 w-3" />
-																	<span>
-																		Started {formatDate(mentor.startDate)}
-																	</span>
-																</div>
-															</div>
-														</div>
-														<div className="text-right">
-															<Badge className="bg-blue-500">
-																{mentor.focus}
-															</Badge>
-															<div className="mt-2">
-																<div className="mb-1 flex items-center justify-end gap-2">
-																	<span className="text-sm font-medium">
-																		Progress
-																	</span>
-																	<span className="text-sm">
-																		{mentor.progress}%
-																	</span>
-																</div>
-																<div className="h-2 w-32 overflow-hidden rounded-full bg-slate-100">
-																	<div
-																		className="h-full rounded-full bg-blue-600"
-																		style={{
-																			width: `${mentor.progress}%`,
-																		}}></div>
-																</div>
-															</div>
-														</div>
-													</div>
-													<div className="mt-4 flex justify-end gap-2">
-														<Button variant="outline" size="sm">
-															View Profile
-														</Button>
-														<Button size="sm">Schedule Meeting</Button>
-													</div>
-												</div>
-											))}
-										</div>
-
-										<div>
-											<h3 className="mb-3 text-lg font-medium">Past Mentors</h3>
-											{student.pastMentors.map((mentor) => (
-												<div
-													key={mentor.id}
-													className="mb-4 rounded-lg border p-4">
-													<div className="flex items-start gap-3">
-														<Avatar className="h-12 w-12">
-															<AvatarImage
-																src={mentor.avatar || "/placeholder.svg"}
-																alt={mentor.name}
-															/>
-															<AvatarFallback>
-																{mentor.name
-																	.split(" ")
-																	.map((n) => n[0])
-																	.join("")}
-															</AvatarFallback>
-														</Avatar>
-														<div>
-															<h4 className="font-medium">{mentor.name}</h4>
-															<p className="text-sm text-muted-foreground">
-																{mentor.role}
-															</p>
-															<div className="mt-1 flex items-center gap-2 text-xs">
-																<Badge variant="outline">{mentor.period}</Badge>
-																<Badge className="bg-blue-500">
-																	{mentor.focus}
-																</Badge>
-															</div>
-														</div>
-													</div>
-													<div className="mt-3 flex justify-end">
-														<Button variant="outline" size="sm">
-															View Profile
-														</Button>
-													</div>
-												</div>
-											))}
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
+						<MentorsTab data={student} />
 
 						{/* Progress Tab */}
-						<TabsContent value="progress" className="mt-6">
-							<Card>
-								<CardHeader>
-									<CardTitle>Learning Progress</CardTitle>
-									<CardDescription>
-										Track skills development and milestones
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-6">
-										{/* Mentor Relationships Progress */}
-										<div>
-											<h3 className="mb-3 text-lg font-medium">
-												Overall Progress
-											</h3>
-											<div className="rounded-lg border p-4">
-												<div className="mb-2 flex items-center justify-between">
-													<span className="font-medium">
-														Mentorship Completion
-													</span>
-													<span>{student.progress.overallCompletion}%</span>
-												</div>
-												<Progress
-													value={student.progress.overallCompletion}
-													className="h-2.5"
-												/>
-											</div>
-										</div>
-
-										{/* Skills Progress */}
-										<div>
-											<h3 className="mb-3 text-lg font-medium">
-												Skills Progress
-											</h3>
-											<div className="space-y-4">
-												{student.progress.skillsProgress.map((skill, i) => (
-													<div key={i} className="rounded-lg border p-4">
-														<div className="mb-2 flex items-center justify-between">
-															<span className="font-medium">{skill.skill}</span>
-															<span className="text-sm">
-																{skill.current}% of {skill.target}% target
-															</span>
-														</div>
-														<div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
-															<div
-																className="absolute left-0 h-full rounded-full bg-slate-300"
-																style={{ width: `${skill.target}%` }}></div>
-															<div
-																className="absolute left-0 h-full rounded-full bg-blue-600"
-																style={{ width: `${skill.current}%` }}></div>
-															<div
-																className="absolute left-0 h-full w-px bg-slate-400"
-																style={{ left: `${skill.initial}%` }}></div>
-														</div>
-														<div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-															<span>Initial: {skill.initial}%</span>
-															<span>Current: {skill.current}%</span>
-															<span>Target: {skill.target}%</span>
-														</div>
-													</div>
-												))}
-											</div>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
+						<ProgressTab data={student} />
 
 						{/* Meetings Tab */}
-						<TabsContent value="meetings" className="mt-6">
-							<Card>
-								<CardHeader>
-									<CardTitle>Mentorship Meetings</CardTitle>
-									<CardDescription>
-										Upcoming and past mentoring sessions
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-6">
-										<div>
-											<h3 className="mb-3 text-lg font-medium">
-												Upcoming Meetings
-											</h3>
-											{student.meetings.upcoming.length > 0 ? (
-												<div className="space-y-4">
-													{student.meetings.upcoming.map((meeting) => (
-														<div
-															key={meeting.id}
-															className="rounded-lg border p-4">
-															<div className="mb-2 flex items-center justify-between">
-																<h4 className="font-medium">{meeting.topic}</h4>
-																<Badge variant="outline">
-																	{meeting.duration} min
-																</Badge>
-															</div>
-															<div className="mb-3 flex items-center gap-4">
-																<div className="flex items-center gap-1 text-sm">
-																	<Calendar className="h-4 w-4 text-muted-foreground" />
-																	<span>{formatDate(meeting.date)}</span>
-																</div>
-																<div className="flex items-center gap-1 text-sm">
-																	<Clock className="h-4 w-4 text-muted-foreground" />
-																	<span>{formatTime(meeting.date)}</span>
-																</div>
-															</div>
-															<div className="flex items-center gap-2">
-																<span className="text-sm text-muted-foreground">
-																	With:
-																</span>
-																<span className="text-sm font-medium">
-																	{meeting.mentor}
-																</span>
-															</div>
-															<div className="mt-3 flex gap-2">
-																<Button size="sm" className="flex-1">
-																	Join Meeting
-																</Button>
-															</div>
-														</div>
-													))}
-												</div>
-											) : (
-												<div className="rounded-lg border p-4 text-center text-muted-foreground">
-													No upcoming meetings scheduled
-												</div>
-											)}
-										</div>
-
-										<div>
-											<h3 className="mb-3 text-lg font-medium">
-												Past Meetings
-											</h3>
-											<div className="space-y-4">
-												{student.meetings.past.map((meeting) => (
-													<div
-														key={meeting.id}
-														className="rounded-lg border p-4">
-														<div className="mb-2 flex items-center justify-between">
-															<h4 className="font-medium">{meeting.topic}</h4>
-															<Badge variant="outline">
-																{meeting.duration} min
-															</Badge>
-														</div>
-														<div className="mb-3 flex items-center gap-4">
-															<div className="flex items-center gap-1 text-sm">
-																<Calendar className="h-4 w-4 text-muted-foreground" />
-																<span>{formatDate(meeting.date)}</span>
-															</div>
-															<div className="flex items-center gap-1 text-sm">
-																<Clock className="h-4 w-4 text-muted-foreground" />
-																<span>{formatTime(meeting.date)}</span>
-															</div>
-														</div>
-														<div className="flex items-center gap-2">
-															<span className="text-sm text-muted-foreground">
-																With:
-															</span>
-															<span className="text-sm font-medium">
-																{meeting.mentor}
-															</span>
-														</div>
-														{meeting.notes && (
-															<div className="mt-3 rounded-md bg-slate-50 p-3 text-sm">
-																<div className="font-medium">
-																	Meeting Notes:
-																</div>
-																<p className="mt-1 text-muted-foreground">
-																	{meeting.notes}
-																</p>
-															</div>
-														)}
-													</div>
-												))}
-											</div>
-										</div>
-
-										<div className="flex justify-center">
-											<Button className="flex items-center gap-2">
-												<Calendar className="h-4 w-4" />
-												Schedule New Meeting
-											</Button>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
+						<MeetingsTab role="student" data={student} />
 
 						{/* Projects Tab */}
-						<TabsContent value="projects" className="mt-6">
-							<Card>
-								<CardHeader>
-									<CardTitle>Learning Projects</CardTitle>
-									<CardDescription>
-										Projects completed and in progress
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-6">
-										{student.projects.map((project) => (
-											<div key={project.id} className="rounded-lg border p-4">
-												<div className="mb-2 flex items-center justify-between">
-													<h3 className="text-lg font-medium">
-														{project.title}
-													</h3>
-													{getProjectBadge(project.status)}
-												</div>
-												<p className="mb-3 text-muted-foreground">
-													{project.description}
-												</p>
-												<div className="mb-3 flex flex-wrap gap-1">
-													{project.technologies.map((tech, i) => (
-														<span
-															key={i}
-															className="inline-block rounded-full bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
-															{tech}
-														</span>
-													))}
-												</div>
-												<div className="flex justify-between">
-													{project.url ? (
-														<a
-															href={project.url}
-															target="_blank"
-															rel="noopener noreferrer"
-															className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-800">
-															View Project <ExternalLink className="h-3 w-3" />
-														</a>
-													) : (
-														<span></span>
-													)}
-													<Button variant="outline" size="sm">
-														View Details
-													</Button>
-												</div>
-											</div>
-										))}
-
-										<div className="flex justify-center">
-											<Button className="flex items-center gap-2">
-												<Plus className="h-4 w-4" />
-												Add New Project
-											</Button>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
+						<ProjectsTab data={student} />
 					</Tabs>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
